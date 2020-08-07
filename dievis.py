@@ -28,9 +28,12 @@ def get_thresh(img):
 
 def get_contours(thresh):
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    return contours
+
+def get_die_num(contours):
+    potential = contours[:]
     for cont in contours:
         print(cv2.contourArea(cont))
-    return contours
 
 img_color = resize(read_img('img/top.png'))
 thresh = get_thresh(img_color)
