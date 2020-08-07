@@ -16,9 +16,6 @@ def resize(img):
     dim = (width, height)
     img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
     return img
-    #th2 = cv2.resize(imgray, dim, interpolation = cv2.INTER_AREA)
-    #thresh = cv2.resize(thresh, dim, interpolation = cv2.INTER_AREA)
-    #cv2.drawContours(imgray, contours, -1, (0,255,0), 3)
 
 def get_thresh(img):
     imgray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -33,7 +30,14 @@ def get_contours(thresh):
 def get_die_num(contours):
     potential = contours[:]
     for cont in contours:
-        print(cv2.contourArea(cont))
+        if cv2.contourArea(cont) > 50:
+            potential.append(cont)
+    area_num = {}
+    for pont in potential:
+        area_num[pont] = 0
+    for pont in potential:
+        for pont2 in potential:
+            if abs(pont-pont2) < pont/3:
 
 img_color = resize(read_img('img/top.png'))
 thresh = get_thresh(img_color)
