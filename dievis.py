@@ -28,16 +28,19 @@ def get_contours(thresh):
     return contours
 
 def get_die_num(contours):
+    # get rid of areas that are too small
     potential = contours[:]
     for cont in contours:
         if cv2.contourArea(cont) > 50:
             potential.append(cont)
+    # look for a cluster of 6-1 with similar areas
     area_num = {}
     for pont in potential:
         area_num[pont] = 0
     for pont in potential:
         for pont2 in potential:
             if abs(pont-pont2) < pont/3:
+                print(1)
 
 img_color = resize(read_img('img/top.png'))
 thresh = get_thresh(img_color)
