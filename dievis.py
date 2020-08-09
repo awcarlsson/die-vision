@@ -32,7 +32,6 @@ def get_die_num(contourss):
     potentials = []
     contours_cop = []
     for cont in contours:
-        #print("found: " + str(cv2.contourArea(cont)))
         # todo: bad hardcoded nums, calculate based on image area
         if cv2.contourArea(cont) > 50 and cv2.contourArea(cont) < 1000:
             contours_cop.append(cont)
@@ -40,7 +39,6 @@ def get_die_num(contourss):
     # look for a cluster of 6-1 with similar areas
     contours = contours_cop
     clusters = []
-    #print(potentials)
     for pont in potentials:
         if len(clusters) == 0:
             clusters.append([pont])
@@ -52,7 +50,6 @@ def get_die_num(contourss):
                     clust_found = True
             if not clust_found:
                 clusters.append([pont])
-    #print(clusters)
     lengths = []
     for clust in clusters:
         if len(clust) <= 6:
@@ -77,7 +74,7 @@ while True:
     contours = get_contours(thresh)
     cv2.drawContours(img_color, contours, -1, (0,255,0), 3)
     # cv2.imshow("Frame", thresh)
-    cv2.imshow("frame", img_color)
+    cv2.imshow("DIEVISION3000", img_color)
     print(get_die_num(contours))
 
     key = cv2.waitKey(1)
@@ -86,8 +83,3 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-# cv2.drawContours(img_color, contours, -1, (0,255,0), 3)
-# cv2.imshow('im', img_color)
-# cv2.imshow('thr', thresh)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
