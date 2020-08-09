@@ -18,13 +18,21 @@ def resize(img):
 
 def get_thresh(img):
     imgray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    ret, thresh = cv2.threshold(imgray, 35, 255, cv2.THRESH_BINARY)
+    #ret, thresh = cv2.threshold(imgray, 45, 255, cv2.THRESH_BINARY)
+    thresh = cv2.adaptiveThreshold(imgray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 101, 45)
     thresh = ~thresh
     return thresh
 
 def get_contours(thresh):
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     return contours
+
+def get_lines(img):
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(gray, (5, 5), 0)
+    edges = cv2.Canny(gray, 100, 200, apertureSize = 3, L2gradient=True)
+    lines = cv2.HoughLinesP(edges, 1, np.pi/180, 50, minLineLength=50, maxLineGap=15)
+    return lines
 
 def get_die_num(contourss):
     global contours
@@ -73,9 +81,19 @@ while True:
     thresh = get_thresh(img_color)
     contours = get_contours(thresh)
     cv2.drawContours(img_color, contours, -1, (0,255,0), 3)
-    # cv2.imshow("Frame", thresh)
+    #cv2.imshow("Frame", thresh)
+
+    lines = get_lines(img_color)
+    if lines is not None:
+        for line in lines:
+            x1,y1,x2,y2 = line[0]
+            cv2.line(img_color,(x1,y1),(x2,y2),(0,255,0),2)
+
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    num = str(get_die_num(contours))
+    cv2.putText(img_color, num, (30,330), font, 3, (0, 255, 0), 2, cv2.LINE_AA)
+
     cv2.imshow("DIEVISION3000", img_color)
-    print(get_die_num(contours))
 
     key = cv2.waitKey(1)
     if key == 27:
